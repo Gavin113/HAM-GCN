@@ -1,7 +1,9 @@
 # Hand-Aware Masked Graph Convolutional Network for Sign Language Recognition
 This repository includes Python (PyTorch) source code of the paper.
 
-![](./figures/HAM-GC-block.png)
+![](./figures/main_model.png)
+![](./figures/HAM-GC-Block.png)
+
 ## Requirements
 
 ```bash
