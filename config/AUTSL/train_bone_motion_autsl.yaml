@@ -1,0 +1,57 @@
+# python main_ctrgcn.py --config config/AUTSL/train_bone_motion_autsl.yaml
+work_dir: ./work_dir/AUTSL/bone_motion
+phase: train
+seed: 17
+##################### Arguments  ##########################
+
+# feeder
+feeder: feeders.feeder_autsl.Feeder
+train_feeder_args:
+  data_path: data/AUTSL/train_data_bone_motion.npy
+  label_path: data/AUTSL/train_label.pkl
+  debug: False   # If true, only use the first 100 samples  
+  random_choose: True   
+  window_size: 100 
+  random_shift: True  
+  normalization: True
+  random_mirror: True  
+  random_mirror_p: 0.5   
+  is_vector: True  
+
+
+
+test_feeder_args:
+  split: test
+  data_path: data/AUTSL/test_data_bone_motion.npy
+  label_path: data/AUTSL/test_label.pkl
+  random_mirror: False
+  normalization: True
+  is_vector: True  # 相关：random_shift、normalization、random_mirror   # 除joint外，bone、Jm、Bm 均为 True
+  debug: False
+
+model: model.ctrgcn.Model
+model_args:
+  num_class: 226  # autsl
+  num_point: 27
+  num_person: 1
+  in_channels: 3
+  graph: graph.autsl_27_gragh.Graph
+  graph_args:
+    labeling_mode: 'hand'
+
+#optim
+weight_decay: 0.0004
+base_lr: 0.1
+lr_decay_rate: 0.01
+step: [35, 55]
+warm_up_epoch: 10
+
+
+# training
+device: [0]
+batch_size: 32
+test_batch_size: 64
+num_epoch: 150
+nesterov: True
+save_epoch: 10
+save_interval: 2

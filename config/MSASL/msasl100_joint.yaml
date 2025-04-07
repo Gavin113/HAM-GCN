@@ -1,0 +1,60 @@
+work_dir: ./work_dir/msasl/msasl100
+subset_name: MS_ASL
+phase: train
+# feeder
+seed: 17
+feeder: feeders.feeder_msasl.Feeder
+train_feeder_args:
+  data_path: data/MSASL/msals66/msasl66pre_train.npz
+  debug: False
+  random_choose: False
+  random_shift: False
+  random_move: False
+  window_size: 64
+  num_class: 100
+  normalization: True
+  random_rot: False
+  p_interval: [0.5, 1]
+  vel: False
+  bone: False
+
+test_feeder_args:
+  data_path: data/MSASL/msals66/msasl66pre_test.npz
+  debug: False
+  split: test
+  window_size: 64
+  num_class: 100
+  p_interval: [0.95]
+  normalization : True
+  vel: False
+  bone: False
+  debug: False
+
+# model
+model: model.ctrgcn.Model
+model_args:
+  num_class: 100
+  num_point: 66
+  num_person: 1
+  in_channels: 3
+  graph: graph.msasl_66.Graph
+  # head: ['ViT-B/32']
+  graph_args:
+    labeling_mode: 'hand'
+
+#optim
+weight_decay: 0.0004
+base_lr: 0.1
+lr_decay_rate: 0.01
+step: [35, 85]
+warm_up_epoch: 1
+lr_ratio: 0.01
+
+# training
+device: [0]
+batch_size: 16
+test_batch_size: 16
+num_epoch: 150
+nesterov: True
+save_epoch: 10
+save_interval: 2

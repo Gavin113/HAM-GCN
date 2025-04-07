@@ -1,0 +1,65 @@
+work_dir: ./work_dir/AUTSL/joint_motion_mask
+phase: train
+seed: 13
+
+# feeder
+feeder: feeders.feeder_autsl_mask.Feeder
+train_feeder_args:
+  data_path: data/AUTSL/train_data_joint_motion.npy
+  label_path: data/AUTSL/train_label.pkl
+  mask_path: data/AUTSL/AUTSL_train_mask_T.npz
+  debug: False   # If true, only use the first 100 samples  
+  random_choose: True   # 在debug的基础上，随机选择视频起始帧、输出长度为window_size的帧序列  TemporalRandomCrop
+  window_size: 100 
+  random_shift: True  # 随机偏移，偏移片段用0填充   # 在序列头部 填充全0帧
+  normalization: True
+  random_mirror: True   # 随机镜像，增加 多样性   # 当前帧 是否翻转
+  random_mirror_p: 0.5   # 随机镜像的阈值
+  is_vector: True  # 相关：random_shift、normalization、random_mirror   # 除joint外，bone、Jm、Bm 均为 True
+
+# val_feeder_args:
+#   data_path: data/AUTSL/val_data_joint_motion.npy    
+#   label_path: data/AUTSL/val_label.pkl
+#   random_mirror: False
+#   normalization: True
+#   is_vector: True  # 相关：random_shift、normalization、random_mirror   # 除joint外，bone、Jm、Bm 均为 True
+#   debug: False
+
+test_feeder_args:
+  split: test
+  random_choose: True
+  window_size: 100 
+  data_path: data/AUTSL/test_data_joint_motion.npy
+  label_path: data/AUTSL/test_label.pkl
+  mask_path: data/AUTSL/AUTSL_test_mask_T.npz
+  random_mirror: False
+  normalization: True
+  is_vector: True  # 相关：random_shift、normalization、random_mirror   # 除joint外，bone、Jm、Bm 均为 True
+  debug: False
+
+model: model.GCN_mask4.Model
+model_args:
+  num_class: 226  # autsl
+  num_point: 27
+  num_person: 1
+  in_channels: 3
+  graph: graph.autsl_27_gragh.Graph
+  graph_args:
+    labeling_mode: 'hand'
+
+#optim
+weight_decay: 0.0004
+base_lr: 0.1
+lr_decay_rate: 0.01
+step: [35, 55]
+warm_up_epoch: 10
+
+
+# training
+device: [0]
+batch_size: 32
+test_batch_size: 32
+num_epoch: 150
+nesterov: True
+save_epoch: 10
+save_interval: 5

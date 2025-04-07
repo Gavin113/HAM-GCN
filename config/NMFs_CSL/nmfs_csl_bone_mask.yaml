@@ -1,0 +1,62 @@
+work_dir: ./work_dir/nmfs/bone_gcn_mask
+phase: train
+seed: 19
+# feeder
+feeder: feeders.feeder_nmfs_csl_mask.Feeder
+train_feeder_args:
+  data_path: data/NMFs-CSL/nmf_train.npz
+  split: train
+  debug: False
+  random_choose: True
+  random_shift: True
+  random_move: True
+  window_size: 64
+  normalization: False
+  random_rot: True
+  p_interval: [0.5, 1]
+  vel: False
+  bone: True
+
+test_feeder_args:
+  data_path: data/NMFs-CSL/nmf_test.npz     #valid和test相同
+  split: test
+  random_choose: False
+  random_shift: False
+  random_move: False
+  window_size: 64
+  random_rot: False
+  p_interval: [0.95]
+  vel: False
+  bone: True
+  debug: False
+
+# model
+model: model.HAM_GCN.Model
+model_args:
+  num_class: 1067
+  num_point: 66
+  num_person: 1
+  in_channels: 3
+  graph: graph.nmfs_graph.Graph
+  # head: ['ViT-B/32']
+  graph_args:
+    labeling_mode: 'hand'
+
+#optim
+weight_decay: 0.0004
+base_lr: 0.1
+lr_decay_rate: 0.1
+step: [35, 55]
+warm_up_epoch: 20
+lr_ratio: 0.001
+
+# training
+device: [0]
+batch_size: 32
+test_batch_size: 32
+num_epoch: 150
+nesterov: True
+save_epoch: 10
+save_interval: 2
+
+

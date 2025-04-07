@@ -1,0 +1,58 @@
+work_dir: ./work_dir/nmfs/confusing_joint_hand_mask
+phase: test
+# weights: 
+seed: 17
+
+# feeder
+feeder: feeders.feeder_nmfs_csl_mask.Feeder_confusing
+train_feeder_args:
+  data_path: data/NMFs-CSL/nmf_train.npz
+  mask_path: data/NMFs-CSL/nmf_train_mask_T.npz
+  debug: False
+  random_choose: True
+  random_shift: True
+  random_move: True
+  window_size: 64
+  normalization: False
+  random_rot: True
+  p_interval: [0.5, 1]
+  vel: False
+  bone: False
+
+test_feeder_args:
+  data_path: data/NMFs-CSL/nmf_test.npz     #valid和test相同
+  mask_path: data/NMFs-CSL/nmf_test_mask_T.npz
+  split: test
+  window_size: 64
+  p_interval: [0.95]
+  vel: False
+  bone: False
+  debug: False
+
+# model
+model: model.HAM_GCN.Model
+model_args:
+  num_class: 610
+  num_point: 66
+  num_person: 1
+  in_channels: 3
+  graph: graph.nmfs_graph.Graph
+  # head: ['ViT-B/32']
+  graph_args:
+    labeling_mode: 'hand'
+
+#optim
+weight_decay: 0.0004
+base_lr: 0.1
+lr_decay_rate: 0.01
+step: [35, 55]
+warm_up_epoch: 20
+
+# training
+device: 0
+batch_size: 32
+test_batch_size: 32
+num_epoch: 150
+nesterov: True
+save_epoch: 10
+save_interval: 5

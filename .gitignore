@@ -1,0 +1,11 @@
+# Byte-compiled / optimized / DLL files
+
+clip/
+data/
+poses/
+raw_data/
+text/
+work_dir/
+*.npy
+*.png
+*.pyc
